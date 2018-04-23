@@ -3,6 +3,7 @@
 
 import sys
 import numpy
+import datetime
 
 def editDistance(r, h):
     '''
@@ -192,13 +193,31 @@ def wer(r, h):
     list = getStepList(r, h, d)
 
     # print the result in aligned way
-    result = float(d[len(r)][len(h)]) / len(r) * 100
-    result = str("%.2f" % result) + "%"
+    raw_result = float(d[len(r)][len(h)]) / len(r)
+    float_result = raw_result * 100
+    result = str("%.2f" % float_result) + "%"
     alignedPrint(list, r, h, result)
+    return str("%.6f" % raw_result)
 
 if __name__ == '__main__':
     filename1 = sys.argv[1]
     filename2 = sys.argv[2]
-    r = file(filename1).read().split()
-    h = file(filename2).read().split()
-    wer(r, h)   
+
+    now = datetime.datetime.now()
+    outfile = str(now) + ".csv"
+
+    results = []
+    reference_lines = file(filename1).read().split("\n")
+    hypothesis_lines = file(filename2).read().split("\n")
+    if len(hypothesis_lines) is not len(reference_lines):
+        raise ValueError("Input and output file length is different")
+
+    for index, reference_line in list(enumerate(reference_lines)):
+        hypothesis_line = hypothesis_lines[index]
+        value = wer(reference_line.split(), hypothesis_line.split())
+        results.append(value)
+
+    with open(outfile, "wb") as filehandle:
+        joined = "\n".join(results)
+        filehandle.write(joined)
+
