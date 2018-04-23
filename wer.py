@@ -213,7 +213,7 @@ if __name__ == '__main__':
     results = []
     reference_lines = file(filename1).read().split("\n")
     hypothesis_lines = file(filename2).read().split("\n")
-    if len(hypothesis_lines) is not len(reference_lines):
+    if len(hypothesis_lines) != len(reference_lines):
         raise ValueError("Input and output file length is different")
 
     for index, reference_line in list(enumerate(reference_lines)):
