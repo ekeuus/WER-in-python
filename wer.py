@@ -4,6 +4,7 @@
 import sys
 import numpy
 import datetime
+import re
 
 def editDistance(r, h):
     '''
@@ -199,6 +200,9 @@ def wer(r, h):
     alignedPrint(list, r, h, result)
     return str("%.6f" % raw_result)
 
+def clean_line(line):
+    return re.sub('[^0-9a-zA-Z ]+', '', line.lower())
+
 if __name__ == '__main__':
     filename1 = sys.argv[1]
     filename2 = sys.argv[2]
@@ -214,7 +218,7 @@ if __name__ == '__main__':
 
     for index, reference_line in list(enumerate(reference_lines)):
         hypothesis_line = hypothesis_lines[index]
-        value = wer(reference_line.split(), hypothesis_line.split())
+        value = wer(clean_line(reference_line).split(), clean_line(hypothesis_line).split())
         results.append(value)
 
     with open(outfile, "wb") as filehandle:
